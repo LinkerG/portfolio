@@ -13,46 +13,44 @@ export const getPokemon = async () => {
 };
 
 export const fetchPinnedRepos = async () => {
-  console.log(config.GITHUB_TOKEN);
-  
-  const token = config.GITHUB_TOKEN;
-  const query = `
-    {
-      user(login: "LinkerG") {
-        pinnedItems(first: 6, types: REPOSITORY) {
-          nodes {
-            ... on Repository {
-              name
-              url
-              stargazerCount
-              primaryLanguage {
-                name
-                color
-              }
-              description
-              createdAt
-              forkCount
-              homepageUrl
+    const token = config.GITHUB_TOKEN;
+    const query = `
+        {
+            user(login: "LinkerG") {
+                pinnedItems(first: 6, types: REPOSITORY) {
+                    nodes {
+                        ... on Repository {
+                                name
+                                url
+                                stargazerCount
+                                primaryLanguage {
+                                    name
+                                    color
+                                }
+                            description
+                            createdAt
+                            forkCount
+                            homepageUrl
+                        }
+                    }
+                }
             }
-          }
         }
-      }
+    `;
+
+    try {
+        const response = await axios.post(
+            'https://api.github.com/graphql',
+            { query },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+
+        return response.data.data.user.pinnedItems.nodes;
+    } catch (error) {
+        console.error('Error fetching pinned repositories', error);
     }
-  `;
-
-  try {
-    const response = await axios.post(
-      'https://api.github.com/graphql',
-      { query },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
-
-    return response.data.data.user.pinnedItems.nodes;
-  } catch (error) {
-    console.error('Error fetching pinned repositories', error);
-  }
 };

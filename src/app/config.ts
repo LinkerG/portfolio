@@ -6,8 +6,5 @@ const config = {
     GITHUB_TOKEN: process.env.GITHUB_TOKEN
 };
 
-console.log(config);
-
-  
 export default config;
   
